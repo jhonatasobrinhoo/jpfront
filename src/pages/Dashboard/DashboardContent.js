@@ -1,7 +1,7 @@
 import {Tabs} from "antd";
 import React from "react";
-import TrainingTab from "./TrainingTab";
-import {TrainingContextProvider} from "../../contexts/training/TrainingContext";
+import WorkoutTab from "./WorkoutTab";
+import {WorkoutContextProvider} from "../../contexts/workout/WorkoutContext";
 
 const DashboardContent = () => <Tabs
     defaultActiveKey="1"
@@ -10,12 +10,14 @@ const DashboardContent = () => <Tabs
         [
             {
                 label: `Treino`,
-                key: 'training',
-                children: <TrainingContextProvider><TrainingTab /></TrainingContextProvider>,
+                key: 'workout',
+                children: <WorkoutContextProvider>
+                    <WorkoutTab/>
+                </WorkoutContextProvider>,
             },
             {
                 label: `Alimentação`,
-                key: 'alimentacao',
+                key: 'food',
                 children: `Content of Tab Pane 'alimentacao'`,
             },
         ]

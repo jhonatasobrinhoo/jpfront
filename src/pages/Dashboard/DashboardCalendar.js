@@ -2,8 +2,8 @@ import CalendarHeatmap from "react-calendar-heatmap";
 import {Tooltip} from "antd";
 import {DateTime, Interval} from "luxon";
 import {useContext} from "react";
-import {TrainingContext} from "../../contexts/training/TrainingContext";
-import * as trainingService from "../../apis/trainingService";
+import {WorkoutContext} from "../../contexts/workout/WorkoutContext";
+import * as workoutService from "../../apis/workoutService";
 
 function* datesInInterval(interval) {
     let cursor = interval.start;
@@ -16,12 +16,12 @@ function* datesInInterval(interval) {
 const DashboardCalendar = () => {
     const now = DateTime.now();
     const endOfWeek = now.minus({days: 1}).endOf('week');
-    const nineMonthsAgo = endOfWeek.minus({months: 5, days: 1});
+    const fiveMonthsAgo = endOfWeek.minus({months: 5, days: 1});
 
     const newValues = [];
-    const interval = Interval.fromDateTimes(nineMonthsAgo, endOfWeek);
+    const interval = Interval.fromDateTimes(fiveMonthsAgo, endOfWeek);
 
-    const {dates, addDate, removeDate, modifyDate} = useContext(TrainingContext);
+    const {dates, addDate, removeDate, modifyDate} = useContext(WorkoutContext);
     const mappedDates = dates.map(d => d.date);
     for (const date of datesInInterval(interval)) {
         newValues.push({
@@ -49,31 +49,31 @@ const DashboardCalendar = () => {
         </Tooltip>
     }
 
-    const pushTraining = async (date) => {
+    const pushWorkout = async (date) => {
         addDate(date);
 
-        const data = await trainingService.addTraining(date);
+        const data = await workoutService.addWorkout(date);
 
         modifyDate(date, {id: data.id});
     }
 
-    const removeTraining = async (date) => {
+    const removeWorkout = async (date) => {
         const dateInstance = dates.find(d => d.date === date);
 
         removeDate(date);
 
-        await trainingService.removeTraining(dateInstance.id);
+        await workoutService.removeWorkout(dateInstance.id);
     }
 
     const onClick = (value) => {
         const valueAsDate = value.date.toFormat('yyyy-MM-dd')
-        value.count > 0 ? removeTraining(valueAsDate) : pushTraining(valueAsDate);
+        value.count > 0 ? removeWorkout(valueAsDate) : pushWorkout(valueAsDate);
     }
 
     return <div style={{padding: '10px'}}>
         <CalendarHeatmap
             style={{height: '400px'}}
-            startDate={nineMonthsAgo.toJSDate()}
+            startDate={fiveMonthsAgo.toJSDate()}
             endDate={endOfWeek.toJSDate()}
             values={newValues}
             onClick={onClick}

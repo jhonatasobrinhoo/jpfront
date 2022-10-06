@@ -1,5 +1,5 @@
 import {createContext, useEffect, useReducer} from "react";
-import {getAllTrainings} from "../../apis/trainingService";
+import {getAllWorkouts} from "../../apis/workoutService";
 import {getStatistics} from "../../apis/statisticsService"
 import * as actions from './actions';
 import reducer from './reducer';
@@ -12,9 +12,9 @@ const initialState = {
     }
 };
 
-export const TrainingContext = createContext({});
+export const WorkoutContext = createContext({});
 
-export const TrainingContextProvider = ({children}) => {
+export const WorkoutContextProvider = ({children}) => {
     const [state, dispatch] = useReducer(reducer, initialState, undefined);
 
     const value = {
@@ -37,13 +37,13 @@ export const TrainingContextProvider = ({children}) => {
 
     useEffect(() => {
         (async function fetchDates() {
-            const trainingsResponse = await getAllTrainings();
-            dispatch({type: actions.FETCH_DATES, payload: trainingsResponse});
+            const workoutsResponse = await getAllWorkouts();
+            dispatch({type: actions.FETCH_DATES, payload: workoutsResponse});
 
             const statisticsResponse = await getStatistics();
             dispatch({type: actions.FETCH_STATISTICS, payload: statisticsResponse.workouts});
         })();
     }, []);
 
-    return <TrainingContext.Provider value={value}>{children}</TrainingContext.Provider>
+    return <WorkoutContext.Provider value={value}>{children}</WorkoutContext.Provider>
 }

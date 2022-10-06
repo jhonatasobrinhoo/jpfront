@@ -2,11 +2,11 @@ import {Button, Card, Col, Row, Statistic} from "antd";
 import {useContext} from "react";
 import DashboardCalendar from "./DashboardCalendar";
 import {ArrowDownOutlined, ArrowUpOutlined} from "@ant-design/icons";
-import {TrainingContext} from "../../contexts/training/TrainingContext";
+import {WorkoutContext} from "../../contexts/workout/WorkoutContext";
 import {DateTime} from "luxon";
 
 const DoneButton = () => {
-    const context = useContext(TrainingContext);
+    const context = useContext(WorkoutContext);
 
     const {dates, addDate, removeDate} = context;
 
@@ -25,9 +25,9 @@ const DoneButton = () => {
     >Feito!</Button>
 }
 
-const TrainingTab = () => {
+const WorkoutTab = () => {
 
-    const { statistics: statisticsState } = useContext(TrainingContext);
+    const { statistics: statisticsState } = useContext(WorkoutContext);
 
     const gridStyle = {
         width: '50%',
@@ -108,4 +108,4 @@ const TrainingTab = () => {
     </Row>
 }
 
-export default TrainingTab;
+export default WorkoutTab;
