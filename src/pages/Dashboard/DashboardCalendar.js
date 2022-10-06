@@ -50,10 +50,7 @@ const DashboardCalendar = () => {
     }
 
     const pushTraining = async (date) => {
-        addDate({
-            id: null,
-            date,
-        });
+        addDate(date);
 
         const data = await trainingService.addTraining(date);
 

@@ -1,6 +1,7 @@
 import {Tabs} from "antd";
 import React from "react";
 import TrainingTab from "./TrainingTab";
+import {TrainingContextProvider} from "../../contexts/training/TrainingContext";
 
 const DashboardContent = () => <Tabs
     defaultActiveKey="1"
@@ -10,7 +11,7 @@ const DashboardContent = () => <Tabs
             {
                 label: `Treino`,
                 key: 'training',
-                children: <TrainingTab />,
+                children: <TrainingContextProvider><TrainingTab /></TrainingContextProvider>,
             },
             {
                 label: `Alimentação`,
