@@ -2,6 +2,7 @@ import {DesktopOutlined, FileOutlined, PieChartOutlined, TeamOutlined, UserOutli
 import {Layout, Menu} from 'antd';
 import React, {useState} from 'react';
 import DashboardContent from "./DashboardContent";
+import {DateTime} from "luxon";
 
 const {Header, Content, Footer, Sider} = Layout;
 
@@ -45,7 +46,7 @@ const Dashboard = () => {
                 <Content style={{margin: '0 16px'}}>
                     <DashboardContent />
                 </Content>
-                <Footer style={{textAlign: 'center'}}>Ant Design ©2018 Created by Ant UED</Footer>
+                <Footer style={{textAlign: 'center'}}>Joice Personal ©{DateTime.now().year}</Footer>
             </Layout>
         </Layout>
     );

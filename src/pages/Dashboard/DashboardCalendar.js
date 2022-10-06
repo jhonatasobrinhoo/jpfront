@@ -1,9 +1,11 @@
 import CalendarHeatmap from "react-calendar-heatmap";
 import {Tooltip} from "antd";
 import {DateTime, Interval} from "luxon";
-import {useEffect, useState} from "react";
+import {useContext} from "react";
+import {TrainingContext} from "../../contexts/training/TrainingContext";
+import * as trainingService from "../../apis/trainingService";
 
-function* dates(interval) {
+function* datesInInterval(interval) {
     let cursor = interval.start;
     while (cursor < interval.end) {
         yield cursor;
@@ -11,36 +13,22 @@ function* dates(interval) {
     }
 }
 
-const DashboardCalendar = ({currentDayActive}) => {
+const DashboardCalendar = () => {
     const now = DateTime.now();
     const endOfWeek = now.minus({days: 1}).endOf('week');
     const nineMonthsAgo = endOfWeek.minus({months: 5, days: 1});
 
     const newValues = [];
     const interval = Interval.fromDateTimes(nineMonthsAgo, endOfWeek);
-    for (const date of dates(interval)) {
+
+    const {dates, addDate, removeDate, modifyDate} = useContext(TrainingContext);
+    const mappedDates = dates.map(d => d.date);
+    for (const date of datesInInterval(interval)) {
         newValues.push({
             date,
-            count: currentDayActive && date.toISODate() === now.toISODate() ? 1 : 0
-        })
-    }
-
-    const [values, setValues] = useState(newValues);
-
-    useEffect(() => {
-        const filteredValues = values.filter(value => {
-            return !value.date.equals(now)
+            count: mappedDates.includes(date.toFormat("yyyy-MM-dd")) ? 1 : 0
         });
-        const newValues = [
-            ...filteredValues,
-            {
-                date: now,
-                count: +currentDayActive,
-            }
-        ]
-        setValues(newValues);
-
-    }, [currentDayActive]);
+    }
 
     const calendarClassForValue = (value) => {
         if (!value || value.count === 0) {
@@ -55,35 +43,42 @@ const DashboardCalendar = ({currentDayActive}) => {
                 {element}
             </div>
         }
-        return <Tooltip placement="rightTop" title={value.date.toFormat('EEE, dd MMMM', {locale: 'pt-BR'})} arrowPointAtCenter className="rect-days">
+        return <Tooltip mouseEnterDelay={0.4} placement="rightTop" title={value.date.toFormat('EEE, dd MMMM', {locale: 'pt-BR'})}
+                        arrowPointAtCenter className="rect-days">
             {element}
         </Tooltip>
     }
 
+    const pushTraining = async (date) => {
+        addDate({
+            id: null,
+            date,
+        });
+
+        const data = await trainingService.addTraining(date);
+
+        modifyDate(date, {id: data.id});
+    }
+
+    const removeTraining = async (date) => {
+        const dateInstance = dates.find(d => d.date === date);
+
+        removeDate(date);
+
+        await trainingService.removeTraining(dateInstance.id);
+    }
+
     const onClick = (value) => {
-        // 2022-01-30T23:59:59.999-03:00
-        // let dateTime = DateTime.fromFormat(value);
-        const dateTime = value.date;
-
-        const found = values.find(v => v.date === dateTime);
-
-        const updatedNode = {
-            ...found,
-            count: found.count === 1 ? 0 : 1
-        }
-
-        setValues([
-            ...values.filter(v => !v.date.equals(dateTime)),
-            updatedNode
-        ])
+        const valueAsDate = value.date.toFormat('yyyy-MM-dd')
+        value.count > 0 ? removeTraining(valueAsDate) : pushTraining(valueAsDate);
     }
 
     return <div style={{padding: '10px'}}>
         <CalendarHeatmap
-            style={{ height: '400px'}}
+            style={{height: '400px'}}
             startDate={nineMonthsAgo.toJSDate()}
             endDate={endOfWeek.toJSDate()}
-            values={values}
+            values={newValues}
             onClick={onClick}
             classForValue={calendarClassForValue}
             transformDayElement={transformDayElement}
