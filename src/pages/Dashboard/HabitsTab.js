@@ -1,14 +1,11 @@
 import {Button, Card, Col, Row, Statistic} from "antd";
 import {useContext} from "react";
 import DashboardCalendar from "./DashboardCalendar";
-import {ArrowDownOutlined, ArrowUpOutlined} from "@ant-design/icons";
-import {WorkoutContext} from "../../contexts/workout/WorkoutContext";
+import {ArrowDownOutlined, ArrowUpOutlined, MinusOutlined} from "@ant-design/icons";
 import {DateTime} from "luxon";
 
-const DoneButton = () => {
-    const context = useContext(WorkoutContext);
-
-    const {dates, addDate, removeDate} = context;
+const DoneButton = ({context}) => {
+    const {dates, addDate, removeDate} = useContext(context);
 
     const currentDate = DateTime.now().toFormat('yyyy-MM-dd');
     const done = dates.map(d => d.date).includes(currentDate);
@@ -25,9 +22,9 @@ const DoneButton = () => {
     >Feito!</Button>
 }
 
-const WorkoutTab = () => {
+const HabitsTab = ({context, addData, removeData}) => {
 
-    const { statistics: statisticsState } = useContext(WorkoutContext);
+    const { statistics: statisticsState } = useContext(context);
 
     const gridStyle = {
         width: '50%',
@@ -52,7 +49,7 @@ const WorkoutTab = () => {
         switch (getDirection(value)) {
             case 'up': return <ArrowUpOutlined />;
             case 'down': return <ArrowDownOutlined />;
-            default: return <ArrowUpOutlined />;
+            default: return <MinusOutlined />;
         }
     }
 
@@ -73,7 +70,7 @@ const WorkoutTab = () => {
     return <Row>
         <Col span={8}>
             <Row justify={"center"} style={{padding: '0px 20px 0px 0px'}}>
-                <DoneButton/>
+                <DoneButton context={context}/>
             </Row>
             <Row justify={"center"} style={{padding: '0px 20px 0px 0px'}}>
                 <Col span={24} style={{padding: '10px 0px', boxShadow: '2px'}}>
@@ -103,9 +100,9 @@ const WorkoutTab = () => {
             </Row>
         </Col>
         <Col span={16}>
-            <DashboardCalendar/>
+            <DashboardCalendar context={context} addData={addData} removeData={removeData}/>
         </Col>
     </Row>
 }
 
-export default WorkoutTab;
+export default HabitsTab;
