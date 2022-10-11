@@ -6,12 +6,12 @@ import React from "react";
 import {ProtectedRoute} from "./ProtectedRoute";
 import Dashboard from "./Dashboard";
 
-const InternalRoutes = () => {
+const InternalRoutes = ({location}) => {
     return (
         <div>
             <Routes>
                 <Route exact path="/" element={<LoginForm/>}/>
-                <Route path="/dashboard" element={<Dashboard/>}>
+                <Route path="/dashboard" element={<Dashboard location={location}/>}>
                     <Route path="habits" element={
                         <ProtectedRoute>
                             <DashboardContent/>

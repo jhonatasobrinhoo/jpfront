@@ -54,7 +54,6 @@ const LoginForm = () => {
 
     return (
         <div className="login-page">
-            <div>{logInformation.loggedIn ? 'Logado' : 'Deslogado'}</div>
             <div className="form">
                 <form className="login-form" style={{display: status === Status.LOGIN ? 'block ' : 'none'}}>
                     <input name="username" type="text" placeholder="Username" onChange={onChange}/>

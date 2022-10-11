@@ -1,8 +1,9 @@
 import {PieChartOutlined, UserOutlined} from "@ant-design/icons";
-import {Link} from "react-router-dom";
+import {Link, useLocation} from "react-router-dom";
 import {Menu} from "antd";
-import React from "react";
+import React, {useEffect, useState} from "react";
 import Sider from "antd/es/layout/Sider";
+import {useAuth} from "../../contexts/auth/AuthContext";
 
 const itemList = (admin) => [
     {
@@ -29,11 +30,34 @@ const getItemList = (admin) => {
     })
 }
 
+const getSelectedKey = (admin, pathname) => {
+    const item = itemList(admin).find(item => item.route === pathname);
+    return item.key;
+}
+
 const Sidebar = ({collapsed, setCollapsed}) => {
+    const {user} = useAuth();
+    const location = useLocation();
+
+    useEffect(() => {
+        const lastActiveIndex = getSelectedKey(user.admin, location.pathname);
+        changeActiveIndex(lastActiveIndex);
+    }, [user.admin, location.pathname]);
+
+    const lastIndexString = localStorage.getItem("lastActiveIndex");
+    const [activeIndex, setActiveIndex] = useState(lastIndexString || '1');
+
+    console.log('activeIndex', activeIndex)
+
+    function changeActiveIndex(newIndex) {
+        // localStorage.setItem("lastActiveIndex", newIndex);
+        setActiveIndex(newIndex);
+    }
+
     return <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
         <div className="logo"/>
-        <Menu theme="dark" mode="inline">
-            {getItemList(true)}
+        <Menu theme="dark" mode="inline" defaultSelectedKeys={[activeIndex]}>
+            {getItemList(user.admin)}
         </Menu>
     </Sider>
 }
