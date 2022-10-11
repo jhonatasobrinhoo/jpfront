@@ -1,6 +1,6 @@
 import {useState} from "react";
-import {useNavigate} from "react-router";
 import {saveContact} from "../apis/contactsService";
+import {useAuth} from "../contexts/auth/AuthContext";
 
 const Status = {
     LOGIN: 'LOGIN',
@@ -9,8 +9,7 @@ const Status = {
 }
 
 const LoginForm = () => {
-
-    const navigate = useNavigate();
+    const {login} = useAuth();
 
     const [logInformation, setLogInformation] = useState({});
     const [status, setStatus] = useState(Status.LOGIN);
@@ -27,8 +26,11 @@ const LoginForm = () => {
 
         const {username, password} = logInformation;
 
-        if (username === 'jhow' || password === '123') {
-            navigate("/dashboard");
+        if (username === 'jhow' && password === '123') {
+            login({
+                username,
+                admin: true
+            });
         }
     }
 

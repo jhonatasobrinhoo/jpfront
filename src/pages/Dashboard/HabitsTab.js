@@ -1,6 +1,6 @@
 import {Button, Card, Col, Row, Statistic} from "antd";
 import {useContext} from "react";
-import DashboardCalendar from "./DashboardCalendar";
+import HabitsCalendar from "../../components/HabitsCalendar";
 import {ArrowDownOutlined, ArrowUpOutlined, MinusOutlined} from "@ant-design/icons";
 import {DateTime} from "luxon";
 
@@ -100,7 +100,7 @@ const HabitsTab = ({context, addData, removeData}) => {
             </Row>
         </Col>
         <Col span={16}>
-            <DashboardCalendar context={context} addData={addData} removeData={removeData}/>
+            <HabitsCalendar context={context} addData={addData} removeData={removeData}/>
         </Col>
     </Row>
 }

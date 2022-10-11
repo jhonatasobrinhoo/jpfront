@@ -1,12 +1,12 @@
 import {Tabs} from "antd";
 import React from "react";
-import HabitsTab from "./HabitsTab";
+import HabitsTab from "../Dashboard/HabitsTab";
 import {WorkoutContext, WorkoutContextProvider} from "../../contexts/workout/WorkoutContext";
 import {FoodContext, FoodContextProvider} from "../../contexts/food/FoodContext";
 import {addWorkout, removeWorkout} from "../../apis/workoutService";
 import {addFood, removeFood} from "../../apis/foodService";
 
-const DashboardContent = () => <Tabs
+const Habits = () => <Tabs
     defaultActiveKey="1"
     centered
     items={
@@ -29,4 +29,4 @@ const DashboardContent = () => <Tabs
     }
 />
 
-export default DashboardContent;
+export default Habits;

@@ -1,8 +1,8 @@
 import CalendarHeatmap from "react-calendar-heatmap";
 import {Tooltip} from "antd";
 import {DateTime, Interval} from "luxon";
-import {useContext} from "react";
-import * as workoutService from "../../apis/workoutService";
+import {cloneElement, useContext} from "react";
+import * as workoutService from "../apis/workoutService";
 
 function* datesInInterval(interval) {
     let cursor = interval.start;
@@ -12,7 +12,7 @@ function* datesInInterval(interval) {
     }
 }
 
-const DashboardCalendar = ({context, addData, removeData}) => {
+const HabitsCalendar = ({context, addData, removeData}) => {
     const now = DateTime.now();
     const endOfWeek = now.minus({days: 1}).endOf('week');
     const fiveMonthsAgo = endOfWeek.minus({months: 5, days: 1});
@@ -21,7 +21,6 @@ const DashboardCalendar = ({context, addData, removeData}) => {
     const interval = Interval.fromDateTimes(fiveMonthsAgo, endOfWeek);
 
     const contextValue = useContext(context);
-    console.log(contextValue);
     const {dates, addDate, removeDate, modifyDate} = contextValue;
     const mappedDates = dates.map(d => d.date);
     for (const date of datesInInterval(interval)) {
@@ -61,15 +60,15 @@ const DashboardCalendar = ({context, addData, removeData}) => {
         return `rect-days color-scale-${value.count}`;
     }
 
-    const transformDayElement = (element, value) => {
+    const transformDayElement = (element, value, index) => {
         if (!value || !value.date) {
             return <div className="rect-days">
-                {element}
+                {cloneElement(element, {key: index})}
             </div>
         }
         return <Tooltip mouseEnterDelay={0.4} placement="rightTop" title={value.date.toFormat('EEE, dd MMMM', {locale: 'pt-BR'})}
                         arrowPointAtCenter className="rect-days">
-            {element}
+            {cloneElement(element, {key: index})}
         </Tooltip>
     }
 
@@ -87,4 +86,4 @@ const DashboardCalendar = ({context, addData, removeData}) => {
     </div>
 }
 
-export default DashboardCalendar;
+export default HabitsCalendar;
